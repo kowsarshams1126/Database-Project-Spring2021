@@ -131,6 +131,7 @@ CREATE TABLE like_comment
 (
   like_comment_id integer NOT NULL,
   user_id INT NOT NULL,
+  date Date,
   comment_id INT NOT NULL,
   PRIMARY KEY (like_comment_id),
   FOREIGN KEY (user_id) REFERENCES user(user_id),
