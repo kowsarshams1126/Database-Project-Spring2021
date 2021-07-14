@@ -9,7 +9,7 @@ cur = con.cursor()
 cur.execute('''
 CREATE TABLE user
 (
-  user_id INT NOT NULL,
+  user_id integer NOT NULL,
   name VARCHAR(100) NOT NULL,
   gender INT,
   email VARCHAR(100) NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE user
 cur.execute('''
 CREATE TABLE connection
 (
-  connection_id INT NOT NULL,
+  connection_id integer NOT NULL,
   user_id1 INT NOT NULL,
   user_id2 INT NOT NULL,
   PRIMARY KEY (connection_id),
@@ -38,7 +38,7 @@ CREATE TABLE connection
 cur.execute('''
 CREATE TABLE invitation
 (
-  invitation_id INT NOT NULL,
+  invitation_id integer NOT NULL,
   user_idT INT NOT NULL,
   user_idR INT NOT NULL,
   PRIMARY KEY (invitation_id),
@@ -50,7 +50,7 @@ CREATE TABLE invitation
 cur.execute('''
 CREATE TABLE conversation
 (
-  conversation_id INT NOT NULL,
+  conversation_id integer NOT NULL,
   read INT NOT NULL,
   archive INT NOT NULL,
   user_idT INT NOT NULL,
@@ -64,7 +64,7 @@ CREATE TABLE conversation
 cur.execute('''
 CREATE TABLE message
 (
-  message_id INT NOT NULL,
+  message_id integer NOT NULL,
   content VARCHAR(100000) NOT NULL,
   transfer_status INT NOT NULL,
   conversation_id INT NOT NULL,
@@ -76,7 +76,7 @@ CREATE TABLE message
 cur.execute('''
 CREATE TABLE post
 (
-  post_id INT NOT NULL,
+  post_id integer NOT NULL,
   content VARCHAR(10000) NOT NULL,
   date DATE,
   user_id INT NOT NULL,
@@ -88,7 +88,7 @@ CREATE TABLE post
 cur.execute('''
 CREATE TABLE share_post
 (
-  share_post_id INT NOT NULL,
+  share_post_id integer NOT NULL,
   comment VARCHAR(10000),
   date DATE,
   post_id INT NOT NULL,
@@ -102,7 +102,7 @@ CREATE TABLE share_post
 cur.execute('''
 CREATE TABLE like_post
 (
-  like_post_id INT NOT NULL,
+  like_post_id integer NOT NULL,
   date DATE,
   post_id INT NOT NULL,
   user_id INT NOT NULL,
@@ -115,7 +115,7 @@ CREATE TABLE like_post
 cur.execute('''
 CREATE TABLE comment
 (
-  comment_id INT NOT NULL,
+  comment_id integer NOT NULL,
   date DATE,
   content VARCHAR(10000) NOT NULL,
   post_id INT NOT NULL,
@@ -129,7 +129,7 @@ CREATE TABLE comment
 cur.execute('''
 CREATE TABLE like_comment
 (
-  like_comment_id INT NOT NULL,
+  like_comment_id integer NOT NULL,
   user_id INT NOT NULL,
   comment_id INT NOT NULL,
   PRIMARY KEY (like_comment_id),
@@ -141,7 +141,7 @@ CREATE TABLE like_comment
 cur.execute('''
 CREATE TABLE reply_comment
 (
-  reply_comment_id INT NOT NULL,
+  reply_comment_id integer NOT NULL,
   comment_id1 INT NOT NULL,
   comment_id2 INT NOT NULL,
   PRIMARY KEY (reply_comment_id),
@@ -153,7 +153,7 @@ CREATE TABLE reply_comment
 cur.execute('''
 CREATE TABLE language
 (
-  language_id INT NOT NULL,
+  language_id integer NOT NULL,
   content VARCHAR(10000) NOT NULL,
   user_id INT NOT NULL,
   PRIMARY KEY (language_id),
@@ -164,7 +164,7 @@ CREATE TABLE language
 cur.execute('''
 CREATE TABLE skill
 (
-  skill_id INT NOT NULL,
+  skill_id integer NOT NULL,
   content VARCHAR(10000) NOT NULL,
   user_id INT NOT NULL,
   PRIMARY KEY (skill_id),
@@ -175,7 +175,7 @@ CREATE TABLE skill
 cur.execute('''
 CREATE TABLE background
 (
-  background_id INT NOT NULL,
+  background_id integer NOT NULL,
   type VARCHAR(10) NOT NULL,
   location VARCHAR(100) NOT NULL,
   field VARCHAR(100) NOT NULL,
@@ -190,7 +190,7 @@ CREATE TABLE background
 cur.execute('''
 CREATE TABLE accomplishment
 (
-  accomplishment_id INT NOT NULL,
+  accomplishment_id integer NOT NULL,
   content VARCHAR(100000) NOT NULL,
   user_id INT NOT NULL,
   PRIMARY KEY (accomplishment_id),
@@ -201,7 +201,7 @@ CREATE TABLE accomplishment
 cur.execute('''
 CREATE TABLE notification
 (
-  notification_id INT NOT NULL,
+  notification_id integer NOT NULL,
   read INT NOT NULL,
   date DATE NOT NULL,
   type INT NOT NULL,
@@ -216,7 +216,7 @@ CREATE TABLE notification
 cur.execute('''
 CREATE TABLE post_notification
 (
-  post_notification_id INT NOT NULL,
+  post_notification_id integer NOT NULL,
   notification_id INT NOT NULL,
   post_id INT NOT NULL,
   PRIMARY KEY (post_notification_id),
@@ -228,7 +228,7 @@ CREATE TABLE post_notification
 cur.execute('''
 CREATE TABLE comment_notification
 (
-  comment_notification_id INT NOT NULL,
+  comment_notification_id integer NOT NULL,
   notification_id INT NOT NULL,
   comment_id INT NOT NULL,
   PRIMARY KEY (comment_notification_id),
@@ -240,7 +240,7 @@ CREATE TABLE comment_notification
 cur.execute('''
 CREATE TABLE feature
 (
-  feature_id INT NOT NULL,
+  feature_id integer NOT NULL,
   content VARCHAR(10000) NOT NULL,
   user_id INT NOT NULL,
   PRIMARY KEY (feature_id),
