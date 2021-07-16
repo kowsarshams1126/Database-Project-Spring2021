@@ -1,8 +1,14 @@
 import tkinter as tk
-import sqlite3
-from functools import partial
+from tkinter import *
 
+import sqlite3
+import datetime
+
+
+from functools import partial
 from my_network import connection_data,people_know_data
+
+
 
 def people_in_network(user_id):
     final_data=[]
@@ -20,13 +26,11 @@ def get_messages(user_id1,user_id2):
     con = sqlite3.connect('linkedin_db.db')
     cur = con.cursor()
     
-    data=cur.execute('''SELECT conversation_id,user_idT,user_idR FROM conversation WHERE
+    data=cur.execute('''SELECT conversation_id FROM conversation WHERE
                      (user_idT=? AND user_idR=?) OR (user_idT=? AND user_idR=?)''',(user_id1,user_id2,user_id2,user_id1,)).fetchall()
 
-    data_final=cur.execute('''select content,? as U from message where conversation_id=? and transfer_status=1
-                           UNION 
-                           select content,? as U from message where conversation_id=? and transfer_status=2''',
-                           (data[0][1],data[0][0],data[0][2],data[0][0],)).fetchall()
+    data_final=cur.execute('''select content,date,f,conversation_id from message where conversation_id=?''',(data[0][0],)).fetchall()
+    
     con.commit()
     con.close()
     return data_final
@@ -46,38 +50,46 @@ def archive_chat_page(user_id):
 def send_message(user_idT,user_idR,content):
     con = sqlite3.connect('linkedin_db.db')
     cur = con.cursor()
-
-    conversation_id=cur.execute('''SELECT conversation_id FROM conversation WHERE
+    print(user_idT,content.get())
+    data=cur.execute('''SELECT conversation_id FROM conversation WHERE
                      (user_idT=? AND user_idR=?) OR (user_idT=? AND user_idR=?)''',(user_idT,user_idR,user_idR,user_idT,)).fetchall()
+ 
+    user_name_transfer=cur.execute('''SELECT username FROM user WHERE user_id=?''',(user_idT,)).fetchall()
     
-    data=cur.execute("INSERT INTO message (content,transfer_status,conversation_id) VALUES(?,?,?)",(content,user_idT,conversation_id[0][0],)).fetchall()
-
+    cur.execute("INSERT INTO message (content,f,conversation_id,date) VALUES(?,?,?,?)",(content.get(),user_name_transfer[0][0],data[0][0],datetime.datetime.now(),))
+    
     con.commit()
     con.close()
 
 def chat_page(user_idT,user_idR):
+    
     messages=get_messages(user_idT,user_idR)
-    print("caht")
+    
     window = tk.Tk()
-    window.title("chat with ",user_idR)
+    
+
     for item in messages:
-        tk.Label(window, text=item[1]).pack()
+        tk.Label(window, text=item[2]).pack()
         tk.Label(window, text=item[0]).pack()
+        tk.Label(window, text=item[1]).pack()
         tk.Label(window, text="--------------------------------------").pack()
 
-    message_content = tk.Entry(window,textvariable = content_var, font=('calibre',10,'normal'))
-    tk.Button(window, text="send",command=partial(send_message, user_idT,user_idR,content_var.get())).pack()
+    text=tk.Entry(window)    
+    text.pack()
+    tk.Button(window, text="send",command=partial(send_message,user_idT,user_idR,text)).pack()
 
-
-    
-    window.geometry('400x400')
+    # window.geometry('400x400')
     window.mainloop()
-    pass
+    
 
 def add_new_chat(user_idT,user_idR):
+    
     con = sqlite3.connect('linkedin_db.db')
     cur = con.cursor()
-    print(user_idR)
+    
+    
+    is_con=cur.execute("""SELECT conversation_id FROM conversation WHERE (user_idT=? AND user_idR=?) OR (user_idT=? AND user_idR=?)""",(user_idT,user_idR,user_idR,user_idT,)).fetchall()
+    print(len(is_con))
     cur.execute("INSERT INTO conversation (read,archive,user_idT,user_idR) VALUES(1,0,?,?)",(user_idT,user_idR,))
 
     con.commit()
@@ -86,7 +98,8 @@ def add_new_chat(user_idT,user_idR):
     chat_page(user_idT, user_idR)
     
 def select_new_chat_page(user_id):
-    people =people_in_network(user_id)
+    
+    people = people_in_network(user_id)
     
     window = tk.Tk()
     window.title("PEOPLE IN YOUR NETWORK")
@@ -113,6 +126,7 @@ def direct_page(user_id):
     window.mainloop()
 
 def main():
+
     direct_page(1)
 
 main()
