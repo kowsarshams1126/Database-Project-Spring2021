@@ -17,6 +17,7 @@ CREATE TABLE user
   about VARCHAR(10000) ,
   birthday DATE ,
   company VARCHAR(10000) ,
+  location VARCHAR(10000) ,
   username VARCHAR(100) NOT NULL,
   password VARCHAR(100) NOT NULL,
   PRIMARY KEY (user_id)
@@ -66,7 +67,8 @@ CREATE TABLE message
 (
   message_id integer NOT NULL,
   content VARCHAR(100000) NOT NULL,
-  transfer_status INT NOT NULL,
+  date DATE,
+  f VARCHAR(100000) NOT NULL,
   conversation_id INT NOT NULL,
   PRIMARY KEY (message_id),
   FOREIGN KEY (conversation_id) REFERENCES conversation(conversation_id)

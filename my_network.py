@@ -1,5 +1,7 @@
 import tkinter as tk
 import sqlite3
+from functools import partial
+
 
 def invitation_data(user_id):
     con = sqlite3.connect('linkedin_db.db')
@@ -128,8 +130,8 @@ def invitation_page(user_id):
     window.title("INVITATION")
     for item in inv_data:
         tk.Label(window, text=item[1]).pack()
-        tk.Button(window, text="accept",command=lambda: accept_invitation(user_id, item[0])).pack()
-        tk.Button(window, text="reject", command=lambda: reject_invitation(user_id, item[0])).pack()
+        tk.Button(window, text="accept",command=partial(accept_invitation,user_id, item[0])).pack()
+        tk.Button(window, text="reject", command=partial(reject_invitation,user_id, item[0])).pack()
         tk.Label(window, text="------------------").pack()
 
     window.geometry('400x400')
@@ -142,7 +144,7 @@ def people_know_page(user_id):
     for item in know_data:
         tk.Label(window, text=item[1]).pack()
         # tk.Button(window, text="view",command=lambda: view_a_user(user_id, item[0])).pack()
-        tk.Button(window, text="invitation", command=lambda: invitation_request(user_id, item[0])).pack()
+        tk.Button(window, text="invitation", command=partial(invitation_request,user_id, item[0])).pack()
         tk.Label(window, text="------------------").pack()
 
     window.geometry('400x400')
@@ -154,7 +156,7 @@ def connection_page(user_id):
     window.title("CONNECTIOIN")
     for item in conn_data:
         tk.Label(window, text=item[1]).pack()
-        # tk.Button(window, text="view",command=lambda: view_a_user(user_id, item[0])).pack()
+        # tk.Button(window, text="view",command=partial(view,user_id,item[0])).pack()
         tk.Label(window, text="------------------").pack()
 
     window.geometry('400x400')
@@ -170,7 +172,7 @@ def my_network_page(user_id):
     window.geometry('400x400')
     window.mainloop()
     
-def main():
-    my_network_page(1);
+# def main():
+#     my_network_page(1);
 
-main()
+# main()
