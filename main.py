@@ -8,5 +8,6 @@ import search
 con = sqlite3.connect('linkedin_db.db')
 cur = con.cursor()
 login(False)
+# search.search(user_id=,"","","","",0)
 
 
