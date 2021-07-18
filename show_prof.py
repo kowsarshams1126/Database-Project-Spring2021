@@ -126,6 +126,5 @@ def profile_mainPage(username):
     ccL.grid(row=12,column=1)
     ccD.grid(row=12,column=2)
 
-
-
+    mainPage.geometry('400x400')
     mainPage.mainloop()

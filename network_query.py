@@ -1,5 +1,5 @@
 import sqlite3
-
+import numpy as np
 
 ###########################################################################
 def connection_data(user_id):
@@ -19,6 +19,25 @@ def connection_data(user_id):
     con.close()
     return data    
 
+def find_mutual_connection(user_id1,user_id2):
+    data1=connection_data(user_id1)
+    data2=connection_data(user_id2)
+    data1_con=[]
+    data2_con=[]
+    
+    for i in data1:
+        data1_con.append(i[0])
+        
+    for i in data2:
+        data2_con.append(i[0])
+    
+    data1_conn=np.array(data1_con)
+    data2_conn=np.array(data2_con)
+
+    intersect=np.intersect1d(data1_conn,data2_conn)
+    print(len(intersect))
+    return len(intersect)
+    
 ###########################################################################
 
 def people_know_data(user_id):
