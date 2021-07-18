@@ -3,13 +3,40 @@ from functools import partial
 from direct_query import *
 
 ################################################################################
+def search_all_chat_page(user_id,text):
+    messages =search_all_chat(user_id,text.get())
+    #tk view
+    window = tk.Tk()
 
+    tk.Label(window, text="result of search'"+text.get()+"':").pack()
+
+    tk.Label(window, text="--------------------------------------").pack()
+
+    
+    for item in messages:
+        tk.Label(window, text=item[2]).pack()
+        tk.Label(window, text=item[0]).pack()
+        tk.Label(window, text=item[1]).pack()
+        tk.Label(window, text="--------------------------------------").pack()
+
+    window.geometry('400x400')
+    window.mainloop()
+
+################################################################################
 def all_chat_page(user_id):
     #get_data
     people=get_all_chat_data(user_id)
     #tk view
     window = tk.Tk()
     window.title("ALL CHAT")
+    
+    tk.Label(window, text="--------------------------------------").pack()
+    
+    text=tk.Entry(window)    
+    text.pack()
+    tk.Button(window, text="search",command=partial(search_all_chat_page,user_id,text)).pack()
+    tk.Label(window, text="--------------------------------------").pack()
+    
     for item in people:
         tk.Label(window, text=item[1]).pack()
         tk.Button(window, text="open",command=partial(chat_page, user_id,item[0])).pack()

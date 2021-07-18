@@ -2,7 +2,25 @@ import sqlite3
 import datetime
 from my_network import connection_data,people_know_data
 # from direct import chat_page
+############################################################################
 
+def search_all_chat(user_id,text):
+    con = sqlite3.connect('linkedin_db.db')
+    cur = con.cursor()
+    
+    data=cur.execute('''
+                     select content,date,f,conversation_id from message where conversation_id IN
+                     (
+                     SELECT conversation_id FROM conversation WHERE user_idR=?
+                     UNION
+                     SELECT conversation_id FROM conversation WHERE user_idT=?
+                     )
+                     AND content LIKE ?
+                     ''',(user_id,user_id,'%'+text+'%',)).fetchall()
+    
+    con.commit()
+    con.close()
+    return data
 
 ############################################################################
 
