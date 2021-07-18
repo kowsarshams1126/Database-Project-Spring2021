@@ -1,9 +1,7 @@
 import tkinter as tk
 from tkinter import *
-
 import sqlite3
 import datetime
-
 
 from functools import partial
 from my_network import connection_data,people_know_data
@@ -36,21 +34,117 @@ def get_messages(user_id1,user_id2):
     return data_final
     
 
-def all_chat_page(user_id):
-    pass
-
-
-def unread_chat_page(user_id):
-    pass
-
-
-def archive_chat_page(user_id):
-    pass
-
-def send_message(user_idT,user_idR,content):
+def get_chat_status(user_id1,user_id2):
     con = sqlite3.connect('linkedin_db.db')
     cur = con.cursor()
-    print(user_idT,content.get())
+    
+    data=cur.execute('''SELECT read,archive FROM conversation WHERE
+                     (user_idT=? AND user_idR=?) OR (user_idT=? AND user_idR=?)''',(user_id1,user_id2,user_id2,user_id1,)).fetchall()
+
+    con.commit()
+    con.close()
+    return data
+    
+def get_all_chat_data(user_id):
+    con = sqlite3.connect('linkedin_db.db')
+    cur = con.cursor()
+    
+    data=cur.execute('''
+                     SELECT user_id,username FROM user WHERE user_id IN
+                     (
+                     SELECT user_idT FROM conversation WHERE user_idR=?
+                     UNION
+                     SELECT user_idR FROM conversation WHERE user_idT=?
+                     )
+                     ''',(user_id,user_id,)).fetchall()
+    
+    con.commit()
+    con.close()
+    return data
+
+def get_unread_chat_data(user_id):
+    con = sqlite3.connect('linkedin_db.db')
+    cur = con.cursor()
+    
+    data=cur.execute('''
+                     SELECT user_id,username FROM user WHERE user_id IN
+                     (
+                     SELECT user_idT FROM conversation WHERE user_idR=? AND read=0
+                     UNION
+                     SELECT user_idR FROM conversation WHERE user_idT=? AND read=0
+                     )
+                     ''',(user_id,user_id,)).fetchall()
+    
+    con.commit()
+    con.close()
+    return data
+
+def get_archive_chat_data(user_id):
+    con = sqlite3.connect('linkedin_db.db')
+    cur = con.cursor()
+    
+    data=cur.execute('''
+                     SELECT user_id,username FROM user WHERE user_id IN
+                     (
+                     SELECT user_idT FROM conversation WHERE user_idR=? AND archive=1
+                     UNION
+                     SELECT user_idR FROM conversation WHERE user_idT=? AND archive=1
+                     )
+                     ''',(user_id,user_id,)).fetchall()
+    
+    con.commit()
+    con.close()
+    return data    
+
+def all_chat_page(user_id):
+    people=get_all_chat_data(user_id)
+    
+    window = tk.Tk()
+    window.title("ALL CHAT")
+    
+    for item in people:
+        tk.Label(window, text=item[1]).pack()
+        tk.Button(window, text="open",command=partial(chat_page, user_id,item[0])).pack()
+        tk.Label(window, text="--------------------------------------").pack()
+    
+    window.geometry('400x400')
+    window.mainloop()
+    
+
+def unread_chat_page(user_id):
+    people=get_unread_chat_data(user_id)
+    
+    window = tk.Tk()
+    window.title("ALL UNREAD CHAT")
+    
+    for item in people:
+        tk.Label(window, text=item[1]).pack()
+        tk.Button(window, text="open",command=partial(chat_page, user_id,item[0])).pack()
+        tk.Label(window, text="--------------------------------------").pack()
+    
+    window.geometry('400x400')
+    window.mainloop()
+    
+
+def archive_chat_page(user_id):
+    people=get_archive_chat_data(user_id)
+    
+    window = tk.Tk()
+    window.title("ALL ARCHIVE CHAT")
+    
+    for item in people:
+        tk.Label(window, text=item[1]).pack()
+        tk.Button(window, text="open",command=partial(chat_page, user_id,item[0])).pack()
+        tk.Label(window, text="--------------------------------------").pack()
+    
+    window.geometry('400x400')
+    window.mainloop()
+    
+def send_message(user_idT,user_idR,content):
+    
+    con = sqlite3.connect('linkedin_db.db')
+    cur = con.cursor()
+
     data=cur.execute('''SELECT conversation_id FROM conversation WHERE
                      (user_idT=? AND user_idR=?) OR (user_idT=? AND user_idR=?)''',(user_idT,user_idR,user_idR,user_idT,)).fetchall()
  
@@ -61,12 +155,45 @@ def send_message(user_idT,user_idR,content):
     con.commit()
     con.close()
 
+def change_read_status(user_id1, user_id2,status):
+    con = sqlite3.connect('linkedin_db.db')
+    cur = con.cursor()
+    
+    data=cur.execute('''UPDATE conversation
+                        SET read = ?
+                        WHERE (user_idT=? AND user_idR=?) OR (user_idT=? AND user_idR=?)''',(status,user_id1,user_id2,user_id2,user_id1,)).fetchall()
+
+    con.commit()
+    con.close()
+    
+def change_archive_status(user_id1, user_id2,status):
+    con = sqlite3.connect('linkedin_db.db')
+    cur = con.cursor()
+    
+    data=cur.execute('''UPDATE conversation
+                        SET archive = ?
+                        WHERE (user_idT=? AND user_idR=?) OR (user_idT=? AND user_idR=?)''',(status,user_id1,user_id2,user_id2,user_id1,)).fetchall()
+
+    con.commit()
+    con.close()
+
 def chat_page(user_idT,user_idR):
     
     messages=get_messages(user_idT,user_idR)
     
     window = tk.Tk()
     
+    chat_status =get_chat_status(user_idT,user_idR)
+    
+    if chat_status[0][0]==1:
+        tk.Button(window, text="unread",command=partial(change_read_status,user_idT,user_idR,0)).pack()
+    if chat_status[0][0]==0:
+        tk.Button(window, text="read",command=partial(change_read_status,user_idT,user_idR,1)).pack()
+    if chat_status[0][1]==1:
+        tk.Button(window, text="unarchive",command=partial(change_archive_status,user_idT,user_idR,0)).pack()
+    if chat_status[0][1]==0:
+        tk.Button(window, text="archive",command=partial(change_archive_status,user_idT,user_idR,1)).pack()
+
 
     for item in messages:
         tk.Label(window, text=item[2]).pack()
@@ -78,7 +205,7 @@ def chat_page(user_idT,user_idR):
     text.pack()
     tk.Button(window, text="send",command=partial(send_message,user_idT,user_idR,text)).pack()
 
-    # window.geometry('400x400')
+    window.geometry('400x400')
     window.mainloop()
     
 
