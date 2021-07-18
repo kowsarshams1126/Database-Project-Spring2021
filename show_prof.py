@@ -6,7 +6,21 @@ import tkinter.font
 con = sqlite3.connect('linkedin_db.db')
 cur = con.cursor()
 
-def profile_mainPage(username):
+
+def do_invitation(param, user_id):
+    res = cur.execute(
+        f'select notification_id from notification where type=2 and user_idT="{user_id}" and user_idR="{param}"').fetchall()
+    if len(res) == 0:
+        cur.execute(
+            f'insert into notification(read,type,user_idT,user_idR,date) values ("{0}","{2}","{user_id}","{param}","{datetime.date.today()}")')
+        con.commit()
+    else:
+        cur.execute(
+            f'update notification set read="{0}",date="{datetime.date.today()}" where notification_id="{res[0][0]}"')
+        con.commit()
+
+
+def profile_mainPage(caller_user_id, username):
     global numOfNotifs
 
     data_from_user_table = cur.execute(f'select * from user where username="{username}" ').fetchall()[0]
@@ -115,16 +129,19 @@ def profile_mainPage(username):
         supportedLanguagesTXT += supportedLanguagesD[i][0] + (', ' if i != len(supportedLanguagesD) else '.')
     supportedLanguagesDs = Label(mainPage, text=supportedLanguagesTXT)
     supportedLanguagesDs.grid(row=10, column=2)
-    locationL=Label(mainPage,text="Location: ")
-    location=cur.execute(f'select location from user where username="{username}"').fetchall()[0][0]
-    locationD=Label(mainPage,text=location)
-    locationL.grid(row=11,column=1)
-    locationD.grid(row=11,column=2)
-    ccL=Label(mainPage,text="Current Company: ")
-    cc=cur.execute(f'select company from user where username="{username}"').fetchall()[0][0]
-    ccD=Label(mainPage,text=cc)
-    ccL.grid(row=12,column=1)
-    ccD.grid(row=12,column=2)
+    locationL = Label(mainPage, text="Location: ")
+    location = cur.execute(f'select location from user where username="{username}"').fetchall()[0][0]
+    locationD = Label(mainPage, text=location)
+    locationL.grid(row=11, column=1)
+    locationD.grid(row=11, column=2)
+    ccL = Label(mainPage, text="Current Company: ")
+    cc = cur.execute(f'select company from user where username="{username}"').fetchall()[0][0]
+    ccD = Label(mainPage, text=cc)
+    ccL.grid(row=12, column=1)
+    ccD.grid(row=12, column=2)
+    invite = Button(mainPage, text="Invite", command=lambda: do_invitation(caller_user_id, user_id))
+    invite.grid(row=13, column=1)
+
 
     mainPage.geometry('400x400')
     mainPage.mainloop()
