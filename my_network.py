@@ -72,7 +72,7 @@ def my_network_page(user_id):
     window.mainloop()
 
 #####################################################################################################    
-def main():
-    my_network_page(3);
+# def main():
+#     my_network_page(3);
 
-main()
+# main()
