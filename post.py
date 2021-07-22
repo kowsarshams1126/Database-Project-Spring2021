@@ -22,17 +22,16 @@ def post_creation():
 
 
     cur.execute("""CREATE TABLE IF NOT EXISTS post(
-                    post_id integer PRIMARY KEY,
-                    content TEXT,
-                    date DATE
-                    user_id INT
-                    );
-                    """)
+    post_id integer PRIMARY KEY,
+    content TEXT,
+    date DATE
+    user_id INT
+    );
+    """)
     con.commit()
 
     cur.execute("""INSERT INTO post(content, date) 
     VALUES('{textpost.get()}', 'GETDATE()');""")
-    
     con.commit()
     
 ##post would add to homepage of those who are in network

@@ -16,7 +16,7 @@ def invitation_page(user_id):
         counter=counter+1
         tk.Label(window, text=str(counter)+"- "+item[1]).pack()
         tk.Label(window, text="mutual con:"+str(find_mutual_connection(user_id,item[0]))).pack()
-        tk.Button(window, text="view",command=partial(view_a_user,user_id,item[1])).pack()
+        tk.Button(window, text="view",command=partial(view_a_user,item[1])).pack()
         tk.Button(window, text="accept",command=partial(accept_invitation,user_id, item[0])).pack()
         tk.Button(window, text="reject", command=partial(reject_invitation,user_id, item[0])).pack()
         tk.Label(window, text="------------------").pack()
@@ -36,7 +36,7 @@ def people_know_page(user_id):
         counter=counter+1
         tk.Label(window, text=str(counter)+"- "+item[1]).pack()
         tk.Label(window, text="mutual con:"+str(find_mutual_connection(user_id,item[0]))).pack()
-        tk.Button(window, text="view",command=partial(view_a_user,user_id,item[1])).pack()
+        tk.Button(window, text="view",command=partial(view_a_user,item[1])).pack()
         tk.Button(window, text="invitation", command=partial(insert_invitation,user_id, item[0])).pack()
         tk.Label(window, text="------------------").pack()
     window.geometry('400x400')
@@ -55,7 +55,7 @@ def connection_page(user_id):
         counter=counter+1
         tk.Label(window, text=str(counter)+"- "+item[1]).pack()
         tk.Label(window, text="mutual con:"+str(find_mutual_connection(user_id,item[0]))).pack()
-        tk.Button(window, text="view",command=partial(view_a_user,user_id,item[1])).pack()
+        tk.Button(window, text="view",command=partial(view_a_user,item[1])).pack()
         tk.Label(window, text="------------------").pack()
     window.geometry('400x400')
     window.mainloop()
@@ -72,7 +72,7 @@ def my_network_page(user_id):
     window.mainloop()
 
 #####################################################################################################    
-def main():
-    my_network_page(1);
+# def main():
+#     my_network_page(3);
 
-main()
+# main()

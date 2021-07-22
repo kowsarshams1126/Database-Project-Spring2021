@@ -109,11 +109,9 @@ def insert_invitation(user_idT,user_idR):
     con = sqlite3.connect('linkedin_db.db')
     cur = con.cursor()
     
-    number_inv=cur.execute('SELECT count(user_idT) FROM invitation WHERE user_idR=? AND user_idT=?',(user_idR,user_idT)).fetchall()
-    numbe_conr=cur.execute("SELECT count(user_id1) FROM connection WHERE (user_id1=? AND user_id2=?) OR (user_id1=? AND user_id2=?)"
-                ,(user_idR,user_idT,user_idT,user_idR,)).fetchall()
+    number=cur.execute('SELECT count(user_idT) FROM invitation WHERE user_idR=? AND user_idT=?',(user_idR,user_idT)).fetchall()
     
-    if number_inv[0][0]==0 and numbe_conr[0][0]==0:
+    if number[0][0]==0:
         cur.execute("INSERT INTO invitation (user_idT,user_idR) VALUES(?,?)",(user_idT,user_idR,))
     else:
         print("you already send invitation to this user")
