@@ -3,6 +3,7 @@ from datetime import datetime
 from tkinter import *
 import tkinter.font
 from network_query import connection_data
+import notif_query
 
 con = sqlite3.connect('linkedin_db.db')
 cur = con.cursor()
@@ -312,6 +313,12 @@ def f15(container, datas, data, button1, output):
 def send_edit_to_DB(editPage, username, user_id, v1, v2, v3, v4, v5, v6,v7,v8, v11, entries1, entries2, entries3,
                     entries4, final):
     editPage.destroy()
+    position=cur.execute(f'select company from user where user_id="{user_id}"').fetchall()[0][0]
+    if position!=v7.get():
+        for user in connection_data(user_id):
+            notif_query.addNotif_changePosition(user_id,user[0])
+
+
     cur.execute(f'''UPDATE user SET name="{v1.get()}",
                                     gender="{1 if str(v2.get()).__eq__("Female") else 0 if v2.get() == "Male" else ""}",
                                     introducion="{v4.get()}",
@@ -320,7 +327,7 @@ def send_edit_to_DB(editPage, username, user_id, v1, v2, v3, v4, v5, v6,v7,v8, v
                                     birthday="{"" if v11.get() == "yyyy-mm-dd" else v11.get()}",
                                     company="{v7.get()}",
                                     location="{v8.get()}"
-                        WHERE username="{username}"
+                                    WHERE username="{username}"
                                     ''')
     cur.execute(f'delete from feature where user_id="{user_id}"')
     con.commit()
@@ -372,9 +379,7 @@ def send_edit_to_DB(editPage, username, user_id, v1, v2, v3, v4, v5, v6,v7,v8, v
                     f'insert into background(location,field,f,t,type,user_id) values ("{data[1].get()}","{data[2].get()}","{data[3].get()}","{data[4].get()}","{data[5]}","{user_id}") ')
                 con.commit()
 
-    # cur.execute(
-    #     f'insert into background(location,field,f,t,type,user_id) values ("{data[0].get()}","{data[1].get()}","{data[2].get()}","{data[3].get()}","{data[4]}","{user_id}") ')
-    con.commit()
+
 
     con.commit()
 
@@ -939,11 +944,22 @@ def editInfo(mainPage, username):
 
 
 def makeNew(i, param, notif_page):
-    userName=cur.execute(f'select name from user where user_id="{param[-2]}"').fetchall()[0]
+    userName=cur.execute(f'select name from user where user_id="{param[-2]}"').fetchall()[0][0]
+    gender=cur.execute(f'select gender from user where user_id="{param[-2]}"').fetchall()[0][0]
     if param[3]==1:
         Label1 = Label(notif_page, text=f'It\'s {userName}\'s birthday!')
-    if param[3]==2:
+    if param[3] == 2:
         Label1 = Label(notif_page, text=f'{userName} saw your profile!')
+    if param[3] == 3:
+        Label1 = Label(notif_page, text=f'{userName} liked your post!')
+    if param[3] == 4:
+        Label1 = Label(notif_page, text=f'{userName} commented on your post!')
+    if param[3] == 5:
+        Label1 = Label(notif_page, text=f'{userName} liked or reply your comment!')
+    if param[3] == 6:
+        Label1 = Label(notif_page, text=f'{userName} endorsed your skill!')
+    if param[3] == 7:
+        Label1 = Label(notif_page, text=f'{userName} had a change in {"his" if gender=="Male" else "her" if gender=="Female" else ""} job position!')
 
     Label1.grid(row=i,column=0)
 
@@ -953,7 +969,7 @@ def makeNew(i, param, notif_page):
 
 def show_notifs(user_id):
     notif_page=Tk()
-    notifs=cur.execute(f'select * from notification where user_idR="{user_id}" and read="{0}"').fetchall()
+    notifs=cur.execute(f'select * from notification where user_idR="{user_id}" and read="{0}" order by date desc').fetchall()
     labels=[Label(notif_page,text="")]*len(notifs)
     svs=[StringVar(notif_page)]*len(notifs)
     for i in range(len(notifs)):
@@ -965,7 +981,7 @@ def show_notifs(user_id):
 def addNotif(user_id, param):
     res=cur.execute(f'select notification_id from notification where type=1 and user_idT="{user_id}" and user_idR="{param}"').fetchall()
     if (len(res)==0):
-        cur.execute(f'insert into notification(read,type,user_idT,user_idR,date) values ("{0}","{2}","{user_id}","{param}","{datetime.date.today()}")')
+        cur.execute(f'insert into notification(read,type,user_idT,user_idR,date) values ("{0}","{1}","{user_id}","{param}","{datetime.date.today()}")')
         con.commit()
     else:
         cur.execute(
@@ -976,6 +992,11 @@ def addNotif(user_id, param):
 
 def profile_mainPage(username):
     global numOfNotifs
+
+
+
+
+
 
 
     data_from_user_table = cur.execute(f'select * from user where username="{username}" ').fetchall()[0]

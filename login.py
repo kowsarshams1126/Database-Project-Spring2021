@@ -2,6 +2,7 @@ import sqlite3
 from tkinter import *
 # global UID
 import profile
+import my_network
 
 con = sqlite3.connect('linkedin_db.db')
 cur = con.cursor()
