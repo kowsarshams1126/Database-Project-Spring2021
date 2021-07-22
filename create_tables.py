@@ -21,7 +21,7 @@ CREATE TABLE user
   username VARCHAR(100) NOT NULL,
   password VARCHAR(100) NOT NULL,
   PRIMARY KEY (user_id)
-);
+)
                ''')
 
 cur.execute('''
@@ -33,7 +33,7 @@ CREATE TABLE connection
   PRIMARY KEY (connection_id),
   FOREIGN KEY (user_id1) REFERENCES user(user_id),
   FOREIGN KEY (user_id2) REFERENCES user(user_id)
-);
+)
                ''')
 
 cur.execute('''
@@ -45,21 +45,19 @@ CREATE TABLE invitation
   PRIMARY KEY (invitation_id),
   FOREIGN KEY (user_idT) REFERENCES user(user_id),
   FOREIGN KEY (user_idR) REFERENCES user(user_id)
-);
+)
                ''')
 
 cur.execute('''
 CREATE TABLE conversation
 (
   conversation_id integer NOT NULL,
-  read INT NOT NULL,
-  archive INT NOT NULL,
   user_idT INT NOT NULL,
   user_idR INT NOT NULL,
   PRIMARY KEY (conversation_id),
   FOREIGN KEY (user_idT) REFERENCES user(user_id),
   FOREIGN KEY (user_idR) REFERENCES user(user_id)
-);
+)
                ''')
 
 cur.execute('''
@@ -72,7 +70,7 @@ CREATE TABLE message
   conversation_id INT NOT NULL,
   PRIMARY KEY (message_id),
   FOREIGN KEY (conversation_id) REFERENCES conversation(conversation_id)
-);
+)
                ''')
 
 cur.execute('''
@@ -84,7 +82,7 @@ CREATE TABLE post
   user_id INT NOT NULL,
   PRIMARY KEY (post_id),
   FOREIGN KEY (user_id) REFERENCES user(user_id)
-);
+)
                ''')
 
 cur.execute('''
@@ -98,7 +96,7 @@ CREATE TABLE share_post
   PRIMARY KEY (share_post_id),
   FOREIGN KEY (post_id) REFERENCES post(post_id),
   FOREIGN KEY (user_id) REFERENCES user(user_id)
-);
+)
                ''')
 
 cur.execute('''
@@ -111,7 +109,7 @@ CREATE TABLE like_post
   PRIMARY KEY (like_post_id),
   FOREIGN KEY (post_id) REFERENCES post(post_id),
   FOREIGN KEY (user_id) REFERENCES user(user_id)
-);
+)
                ''')
 
 cur.execute('''
@@ -125,7 +123,7 @@ CREATE TABLE comment
   PRIMARY KEY (comment_id),
   FOREIGN KEY (post_id) REFERENCES post(post_id),
   FOREIGN KEY (user_id) REFERENCES user(user_id)
-);
+)
                ''')
 
 cur.execute('''
@@ -138,7 +136,7 @@ CREATE TABLE like_comment
   PRIMARY KEY (like_comment_id),
   FOREIGN KEY (user_id) REFERENCES user(user_id),
   FOREIGN KEY (comment_id) REFERENCES comment(comment_id)
-);
+)
                ''')
 
 cur.execute('''
@@ -150,7 +148,7 @@ CREATE TABLE reply_comment
   PRIMARY KEY (reply_comment_id),
   FOREIGN KEY (comment_id1) REFERENCES comment(comment_id),
   FOREIGN KEY (comment_id2) REFERENCES comment(comment_id)
-);
+)
                ''')
 
 cur.execute('''
@@ -161,7 +159,7 @@ CREATE TABLE language
   user_id INT NOT NULL,
   PRIMARY KEY (language_id),
   FOREIGN KEY (user_id) REFERENCES user(user_id)
-);
+)
                ''')
 
 cur.execute('''
@@ -172,7 +170,7 @@ CREATE TABLE skill
   user_id INT NOT NULL,
   PRIMARY KEY (skill_id),
   FOREIGN KEY (user_id) REFERENCES user(user_id)
-);
+)
                ''')
 
 cur.execute('''
@@ -187,7 +185,7 @@ CREATE TABLE background
   user_id INT NOT NULL,
   PRIMARY KEY (background_id),
   FOREIGN KEY (user_id) REFERENCES user(user_id)
-);
+)
                ''')
 
 cur.execute('''
@@ -198,7 +196,7 @@ CREATE TABLE accomplishment
   user_id INT NOT NULL,
   PRIMARY KEY (accomplishment_id),
   FOREIGN KEY (user_id) REFERENCES user(user_id)
-);
+)
                ''')
 
 cur.execute('''
@@ -213,7 +211,7 @@ CREATE TABLE notification
   PRIMARY KEY (notification_id),
   FOREIGN KEY (user_idT) REFERENCES user(user_id),
   FOREIGN KEY (user_idR) REFERENCES user(user_id)
-);
+)
                ''')
 
 cur.execute('''
@@ -225,7 +223,7 @@ CREATE TABLE post_notification
   PRIMARY KEY (post_notification_id),
   FOREIGN KEY (notification_id) REFERENCES notification(notification_id),
   FOREIGN KEY (post_id) REFERENCES post(post_id)
-);
+)
                ''')
 
 cur.execute('''
@@ -237,7 +235,7 @@ CREATE TABLE comment_notification
   PRIMARY KEY (comment_notification_id),
   FOREIGN KEY (notification_id) REFERENCES notification(notification_id),
   FOREIGN KEY (comment_id) REFERENCES comment(comment_id)
-);
+)
                ''')
 
 cur.execute('''
@@ -248,7 +246,43 @@ CREATE TABLE feature
   user_id INT NOT NULL,
   PRIMARY KEY (feature_id),
   FOREIGN KEY (user_id) REFERENCES user(user_id)
-);
+)
+               ''')
+
+cur.execute('''
+CREATE TABLE archive
+(
+  archive_id integer NOT NULL,
+  user_id INT NOT NULL,
+  conversation_id INT NOT NULL,
+  PRIMARY KEY (archive_id),
+  FOREIGN KEY (user_id) REFERENCES user(user_id),
+  FOREIGN KEY (conversation_id) REFERENCES conversation(conversation_id)
+)
+               ''')
+
+cur.execute('''
+CREATE TABLE unread
+(
+  unread_id integer NOT NULL,
+  user_id INT NOT NULL,
+  conversation_id INT NOT NULL,
+  PRIMARY KEY (unread_id),
+  FOREIGN KEY (user_id) REFERENCES user(user_id),
+  FOREIGN KEY (conversation_id) REFERENCES conversation(conversation_id)
+)
+               ''')
+
+cur.execute('''
+CREATE TABLE delete_con
+(
+  delete_id integer NOT NULL,
+  conversation_id INT NOT NULL,
+  user_id INT NOT NULL,
+  PRIMARY KEY (delete_id),
+  FOREIGN KEY (conversation_id) REFERENCES conversation(conversation_id),
+  FOREIGN KEY (user_id) REFERENCES user(user_id)
+)
                ''')
 
 # Save (commit) the changes
