@@ -990,7 +990,7 @@ def addNotif(user_id, param):
 
 
 
-def profile_mainPage(username):
+def profile_mainPage(user_id):
     global numOfNotifs
 
 
@@ -999,8 +999,8 @@ def profile_mainPage(username):
 
 
 
-    data_from_user_table = cur.execute(f'select * from user where username="{username}" ').fetchall()[0]
-    user_id = data_from_user_table[0]
+    data_from_user_table = cur.execute(f'select * from user where user_id="{user_id}" ').fetchall()[0]
+    username = data_from_user_table[-2]
     # ui,un
     for user in connection_data(user_id):
         birth_date = cur.execute(f'select * from user where user_id="{user[0]}" ').fetchall()[0]
