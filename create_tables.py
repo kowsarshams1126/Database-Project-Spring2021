@@ -242,10 +242,11 @@ cur.execute('''
 CREATE TABLE feature
 (
   feature_id integer NOT NULL,
-  content VARCHAR(10000) NOT NULL,
+  post_id INT NOT NULL,
   user_id INT NOT NULL,
   PRIMARY KEY (feature_id),
-  FOREIGN KEY (user_id) REFERENCES user(user_id)
+  FOREIGN KEY (user_id) REFERENCES user(user_id),
+  FOREIGN KEY (post_id) REFERENCES post(post_id)
 )
                ''')
 
