@@ -1124,10 +1124,10 @@ def profile_mainPage(user_id):
 
     refresh = Button(mainPage, text="Refresh")
     edit = Button(mainPage, text="Edit Info", command=lambda: editInfo(mainPage, username))
-    numOfNotifs = len(cur.execute(f'select * from notification where user_idR="{user_id}" and read="{0}"').fetchall())
-    notifs = Button(mainPage, text=("There isn't any new notif." if numOfNotifs == 0 else f'{numOfNotifs} new notif{"s" if numOfNotifs>1 else""}!'),command=lambda :show_notifs(user_id))
+    # numOfNotifs = len(cur.execute(f'select * from notification where user_idR="{user_id}" and read="{0}"').fetchall())
+    # notifs = Button(mainPage, text=("There isn't any new notif." if numOfNotifs == 0 else f'{numOfNotifs} new notif{"s" if numOfNotifs>1 else""}!'),command=lambda :show_notifs(user_id))
     refresh.grid(row=13, column=1)
     edit.grid(row=13, column=2)
-    notifs.grid(row=13, column=3)
+    # notifs.grid(row=13, column=3)
 
     mainPage.mainloop()
