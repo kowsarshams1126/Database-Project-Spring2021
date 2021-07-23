@@ -7,6 +7,7 @@ from post_query import *
 
 def comment_page(user_id,post_id):
     pass
+
 #################################################################################################
 def new_post_page(user_id):
     pass
@@ -152,6 +153,6 @@ def post_page(user_id):
     window.mainloop()
 #################################################################################################
 
-def main():
-    post_page(1)
-main()
+# def main():
+#     post_page(1)
+# main()
