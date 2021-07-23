@@ -48,15 +48,21 @@ def get_unread_chat_data(user_id):
     data=cur.execute('''
                      SELECT user_id,username FROM user WHERE user_id IN
                      (
-                     SELECT user_idT FROM conversation WHERE user_idR=? AND read=0
+                     SELECT user_idT FROM conversation WHERE user_idR=? AND conversation_id IN
+                        (
+                            SELECT conversation_id FROM unread WHERE user_id=?
+                        )
                      UNION
-                     SELECT user_idR FROM conversation WHERE user_idT=? AND read=0
-                     )
-                     ''',(user_id,user_id,)).fetchall()
+                     
+                     SELECT user_idR FROM conversation WHERE user_idT=? AND conversation_id IN
+                        (
+                            SELECT conversation_id FROM unread WHERE user_id=?
+                        )
+                    )''',(user_id,user_id,user_id,user_id,)).fetchall()
     
     con.commit()
     con.close()
-    return data
+    return data 
 
 def get_archive_chat_data(user_id):
     con = sqlite3.connect('linkedin_db.db')
@@ -65,9 +71,17 @@ def get_archive_chat_data(user_id):
     data=cur.execute('''
                      SELECT user_id,username FROM user WHERE user_id IN
                      (
-                     SELECT user_id FROM archive WHERE user_id=?
-                     )
-                     ''',(user_id,)).fetchall()
+                     SELECT user_idT FROM conversation WHERE user_idR=? AND conversation_id IN
+                        (
+                            SELECT conversation_id FROM archive WHERE user_id=?
+                        )
+                     UNION
+                     
+                     SELECT user_idR FROM conversation WHERE user_idT=? AND conversation_id IN
+                        (
+                            SELECT conversation_id FROM archive WHERE user_id=?
+                        )
+                    )''',(user_id,user_id,user_id,user_id,)).fetchall()
     
     con.commit()
     con.close()
@@ -175,7 +189,7 @@ def change_read_status(user_id1, user_id2,status):
     cur = con.cursor()
     
     conversation_id=cur.execute('''SELECT conversation_id FROM conversation 
-         WHERE (user_idT=? AND user_idR=?) OR (user_idT=? AND user_idR=?)''',(user_id1,user_id2,user_id2,user_id1,)).fetchall()
+        WHERE (user_idT=? AND user_idR=?) OR (user_idT=? AND user_idR=?)''',(user_id1,user_id2,user_id2,user_id1,)).fetchall()
 
     if status == 1:
         #make it read
@@ -194,7 +208,7 @@ def change_archive_status(user_id1, user_id2,status):
     cur = con.cursor()
     
     conversation_id=cur.execute('''SELECT conversation_id FROM conversation 
-         WHERE (user_idT=? AND user_idR=?) OR (user_idT=? AND user_idR=?)''',(user_id1,user_id2,user_id2,user_id1,)).fetchall()
+        WHERE (user_idT=? AND user_idR=?) OR (user_idT=? AND user_idR=?)''',(user_id1,user_id2,user_id2,user_id1,)).fetchall()
 
     if status == 0:
         cur.execute('''DELETE FROM archive WHERE conversation_id=? AND user_id=?''',(conversation_id[0][0],user_id1,))
@@ -216,8 +230,8 @@ def send_message(user_idT,user_idR,content):
     cur = con.cursor()
 
     data=cur.execute('''SELECT conversation_id FROM conversation WHERE
-                     (user_idT=? AND user_idR=?) OR (user_idT=? AND user_idR=?)''',(user_idT,user_idR,user_idR,user_idT,)).fetchall()
- 
+                    (user_idT=? AND user_idR=?) OR (user_idT=? AND user_idR=?)''',(user_idT,user_idR,user_idR,user_idT,)).fetchall()
+
     user_name_transfer=cur.execute('''SELECT username FROM user WHERE user_id=?''',(user_idT,)).fetchall()
     
     cur.execute("INSERT INTO message (content,f,conversation_id,date) VALUES(?,?,?,?)",(content.get(),user_name_transfer[0][0],data[0][0],datetime.datetime.now(),))
