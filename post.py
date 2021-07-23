@@ -1,6 +1,7 @@
 import tkinter as tk
 from functools import partial
 from post_query import *
+from create_post import create_post
 
 
 #################################################################################################
@@ -9,8 +10,6 @@ def comment_page(user_id,post_id):
     pass
 
 #################################################################################################
-def new_post_page(user_id):
-    pass
 
 def insert_share_post_page(user_id,post_id):
     pass
@@ -28,9 +27,10 @@ def my_post(user_id):
         tk.Label(window, text=item[3]).pack()
         tk.Button(window, text="like",command=partial(insert_like_post,user_id,item[0])).pack()
         tk.Button(window, text="comment",command=partial(comment_page,user_id,item[0])).pack()
+        tk.Button(window, text="add feature",command=partial(comment_page,user_id,item[0])).pack()
         tk.Label(window, text="--------------------------------------").pack()
 
-    tk.Button(window, text="new post",command=partial(new_post_page,user_id)).pack()
+    tk.Button(window, text="new post",command=partial(create_post,user_id)).pack()
 
     window.geometry('400x400')
     window.mainloop()
@@ -55,6 +55,7 @@ def my_share_post(user_id):
         tk.Label(window, text=item[6]).pack()
         tk.Button(window, text="like",command=partial(insert_like_post,user_id,item[0])).pack()
         tk.Button(window, text="comment",command=partial(comment_page,user_id,item[0])).pack()
+        tk.Button(window, text="add feature",command=partial(comment_page,user_id,item[0])).pack()
         tk.Label(window, text="--------------------------------------").pack()
 
     window.geometry('400x400')
@@ -73,6 +74,7 @@ def network_create_post_page(user_id):
         tk.Button(window, text="share",command=partial(insert_share_post_page,user_id,item[0])).pack()
         tk.Button(window, text="like",command=partial(insert_like_post,user_id,item[0])).pack()
         tk.Button(window, text="comment",command=partial(comment_page,user_id,item[0])).pack()
+        tk.Button(window, text="add feature",command=partial(comment_page,user_id,item[0])).pack()
         tk.Label(window, text="--------------------------------------").pack()
 
     window.geometry('400x400')
@@ -92,6 +94,7 @@ def network_shared_post_page(user_id):
         tk.Button(window, text="share",command=partial(insert_share_post_page,user_id,item[0])).pack()
         tk.Button(window, text="like",command=partial(insert_like_post,user_id,item[0])).pack()
         tk.Button(window, text="comment",command=partial(comment_page,user_id,item[0])).pack()
+        tk.Button(window, text="add feature",command=partial(comment_page,user_id,item[0])).pack()
         tk.Label(window, text="--------------------------------------").pack()
 
     window.geometry('400x400')
@@ -111,6 +114,7 @@ def network_like_post_page(user_id):
         tk.Button(window, text="share",command=partial(insert_share_post_page,user_id,item[0])).pack()
         tk.Button(window, text="like",command=partial(insert_like_post,user_id,item[0])).pack()
         tk.Button(window, text="comment",command=partial(comment_page,user_id,item[0])).pack()
+        tk.Button(window, text="add feature",command=partial(comment_page,user_id,item[0])).pack()
         tk.Label(window, text="--------------------------------------").pack()
 
     window.geometry('400x400')
@@ -130,6 +134,7 @@ def network_comment_post_page(user_id):
         tk.Button(window, text="share",command=partial(insert_share_post_page,user_id,item[0])).pack()
         tk.Button(window, text="like",command=partial(insert_like_post,user_id,item[0])).pack()
         tk.Button(window, text="comment",command=partial(comment_page,user_id,item[0])).pack()
+        tk.Button(window, text="add feature",command=partial(comment_page,user_id,item[0])).pack()
         tk.Label(window, text="--------------------------------------").pack()
 
     window.geometry('400x400')

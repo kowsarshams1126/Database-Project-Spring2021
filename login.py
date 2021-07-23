@@ -20,14 +20,14 @@ def Authentication(loginpage, username1, password):
     global UID
     loginpage.destroy()
     if checkInDB2(username1, password):
-        UID = username1
-        home(UID)
+        UID = cur.execute(f'select user_id from user where username="{username1}"').fetchall()
+        home(UID[0][0])
     else:
         login(True)
 
 
 def checkInDB(username, email):
-    res = cur.execute(f'select user_id from user where name="{username}" or email="{email}"').fetchall()
+    res = cur.execute(f'select user_id from user where username="{username}" or email="{email}"').fetchall()
     print(res)
     print("LLLLLLLLLLLLLLLLLLLLLLLL")
     return False if len(res) == 0 else True
