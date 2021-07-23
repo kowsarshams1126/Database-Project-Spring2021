@@ -4,6 +4,8 @@ from tkinter import *
 import profile
 import my_network
 
+from home import home
+
 con = sqlite3.connect('linkedin_db.db')
 cur = con.cursor()
 
@@ -19,7 +21,7 @@ def Authentication(loginpage, username1, password):
     loginpage.destroy()
     if checkInDB2(username1, password):
         UID = username1
-        profile.profile_mainPage(UID)
+        home(UID)
     else:
         login(True)
 
@@ -42,7 +44,7 @@ def sendData2DB_NEWACCOUNT(newAccount, username, password, email,loginPage):
         con.commit()
         UID = username
         loginPage.destroy()
-        profile.profile_mainPage(UID)
+        home(UID)
         return True
     else:
         Create(True,loginPage)

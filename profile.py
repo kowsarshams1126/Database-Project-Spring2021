@@ -981,11 +981,11 @@ def show_notifs(user_id):
 def addNotif(user_id, param):
     res=cur.execute(f'select notification_id from notification where type=1 and user_idT="{user_id}" and user_idR="{param}"').fetchall()
     if (len(res)==0):
-        cur.execute(f'insert into notification(read,type,user_idT,user_idR,date) values ("{0}","{1}","{user_id}","{param}","{datetime.date.today()}")')
+        cur.execute(f'insert into notification(read,type,user_idT,user_idR,date) values ("{0}","{1}","{user_id}","{param}","{datetime.datetime.now()}")')
         con.commit()
     else:
         cur.execute(
-            f'update notification set read="{0}",date="{datetime.date.today()}" where notification_id="{res[0][0]}"')
+            f'update notification set read="{0}",date="{datetime.datetime.now()}" where notification_id="{res[0][0]}"')
         con.commit()
 
 
@@ -1004,7 +1004,7 @@ def profile_mainPage(username):
     # ui,un
     for user in connection_data(user_id):
         birth_date = cur.execute(f'select * from user where user_id="{user[0]}" ').fetchall()[0]
-        if birth_date==datetime.date.today():
+        if birth_date==datetime.datetime.now():
             addNotif(user[0],user_id)
 
     print(len(data_from_user_table))
