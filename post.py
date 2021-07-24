@@ -1,5 +1,7 @@
 import tkinter as tk
 from functools import partial
+
+import share_post
 from post_query import *
 from create_post import create_post
 
@@ -12,9 +14,20 @@ def comment_page(user_id,post_id):
 #################################################################################################
 
 def insert_share_post_page(user_id,post_id):
-    pass
+    share_post.share_post(user_id,post_id)
 
 #################################################################################################
+def add_feature(user_id,post_id):
+    con = sqlite3.connect('linkedin_db.db')
+    cur = con.cursor()
+    res=cur.execute(f'select * from feature where user_id="{user_id}" and post_id="{post_id}"').fetchall()
+    if len(res)==0:
+        cur.execute(f'insert into feature(user_id,post_id) values("{user_id}","{post_id}")')
+        con.commit()
+        con.close()
+
+
+
 def my_post(user_id):
     #get data
     posts=get_my_post_data(user_id)
@@ -34,7 +47,7 @@ def my_post(user_id):
         
         tk.Button(window, text="like",command=partial(insert_like_post,user_id,item[0])).pack()
         tk.Button(window, text="comment",command=partial(comment_page,user_id,item[0])).pack()
-        tk.Button(window, text="add feature",command=partial(comment_page,user_id,item[0])).pack()
+        tk.Button(window, text="add feature",command=partial(add_feature,user_id,item[0])).pack()
         tk.Label(window, text="--------------------------------------").pack()
 
     tk.Button(window, text="new post",command=partial(create_post,user_id)).pack()
