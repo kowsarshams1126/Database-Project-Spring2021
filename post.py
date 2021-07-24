@@ -21,10 +21,17 @@ def my_post(user_id):
     #tk view
     window = tk.Tk()
     window.title("YOUR POSTS")
+    
     for item in posts:
-        tk.Label(window, text=item[1]).pack()
+        tk.Label(window, text=get_username(item[1])[0][0]).pack()
         tk.Label(window, text=item[2]).pack()
         tk.Label(window, text=item[3]).pack()
+        
+        tk.Label(window, text="number of like:").pack()
+        tk.Label(window, text=get_number_of_like(item[0])).pack()
+        tk.Label(window, text="number of comments:").pack()
+        tk.Label(window, text=get_number_of_comment(item[0])).pack()
+        
         tk.Button(window, text="like",command=partial(insert_like_post,user_id,item[0])).pack()
         tk.Button(window, text="comment",command=partial(comment_page,user_id,item[0])).pack()
         tk.Button(window, text="add feature",command=partial(comment_page,user_id,item[0])).pack()
@@ -45,14 +52,20 @@ def my_share_post(user_id):
 
     for item in posts:
         tk.Label(window, text="post:").pack()
-        tk.Label(window, text=item[1]).pack()
+        tk.Label(window, text=get_username(item[1])[0][0]).pack()
         tk.Label(window, text=item[2]).pack()
         tk.Label(window, text=item[3]).pack()
         
+        tk.Label(window, text="number of like:").pack()
+        tk.Label(window, text=get_number_of_like(item[0])).pack()
+        tk.Label(window, text="number of comments:").pack()
+        tk.Label(window, text=get_number_of_comment(item[0])).pack()
+        
         tk.Label(window, text="share post:").pack()
-        tk.Label(window, text=item[4]).pack()
+        tk.Label(window, text=get_username(item[4])[0][0]).pack()
         tk.Label(window, text=item[5]).pack()
         tk.Label(window, text=item[6]).pack()
+        
         tk.Button(window, text="like",command=partial(insert_like_post,user_id,item[0])).pack()
         tk.Button(window, text="comment",command=partial(comment_page,user_id,item[0])).pack()
         tk.Button(window, text="add feature",command=partial(comment_page,user_id,item[0])).pack()
@@ -68,9 +81,15 @@ def network_create_post_page(user_id):
     window = tk.Tk()
     window.title("POST OF PEOPLE IN YOUR NETWORK")
     for item in posts:
-        tk.Label(window, text=item[1]).pack()
+        tk.Label(window, text=get_username(item[1])[0][0]).pack()
         tk.Label(window, text=item[2]).pack()
         tk.Label(window, text=item[3]).pack()
+
+        tk.Label(window, text="number of like:").pack()
+        tk.Label(window, text=get_number_of_like(item[0])).pack()
+        tk.Label(window, text="number of comments:").pack()
+        tk.Label(window, text=get_number_of_comment(item[0])).pack()
+        
         tk.Button(window, text="share",command=partial(insert_share_post_page,user_id,item[0])).pack()
         tk.Button(window, text="like",command=partial(insert_like_post,user_id,item[0])).pack()
         tk.Button(window, text="comment",command=partial(comment_page,user_id,item[0])).pack()
@@ -83,14 +102,27 @@ def network_create_post_page(user_id):
 
 def network_shared_post_page(user_id):
     #get data
-    posts=network_create_post_data(user_id)
+    posts=network_shared_post_data(user_id)
     #tk view
     window = tk.Tk()
-    window.title("POST OF PEOPLE IN YOUR NETWORK")
+    window.title("YOUR NETWORK SHARED POSTS")
+
     for item in posts:
-        tk.Label(window, text=item[1]).pack()
+        tk.Label(window, text="post:").pack()
+        tk.Label(window, text=get_username(item[1])[0][0]).pack()
         tk.Label(window, text=item[2]).pack()
         tk.Label(window, text=item[3]).pack()
+
+        tk.Label(window, text="number of like:").pack()
+        tk.Label(window, text=get_number_of_like(item[0])).pack()
+        tk.Label(window, text="number of comments:").pack()
+        tk.Label(window, text=get_number_of_comment(item[0])).pack()
+        
+        tk.Label(window, text="share post:").pack()
+        tk.Label(window, text=get_username(item[4])[0][0]).pack()
+        tk.Label(window, text=item[5]).pack()
+        tk.Label(window, text=item[6]).pack()
+        
         tk.Button(window, text="share",command=partial(insert_share_post_page,user_id,item[0])).pack()
         tk.Button(window, text="like",command=partial(insert_like_post,user_id,item[0])).pack()
         tk.Button(window, text="comment",command=partial(comment_page,user_id,item[0])).pack()
@@ -103,14 +135,21 @@ def network_shared_post_page(user_id):
 
 def network_like_post_page(user_id):
     #get data
-    posts=network_create_post_data(user_id)
+    posts=network_like_post_data(user_id)
     #tk view
     window = tk.Tk()
-    window.title("POST OF PEOPLE IN YOUR NETWORK")
+    window.title("NETWORK LIKE POST")
+    
     for item in posts:
-        tk.Label(window, text=item[1]).pack()
+        tk.Label(window, text=get_username(item[1])[0][0]).pack()
         tk.Label(window, text=item[2]).pack()
         tk.Label(window, text=item[3]).pack()
+        
+        tk.Label(window, text="number of like:").pack()
+        tk.Label(window, text=get_number_of_like(item[0])).pack()
+        tk.Label(window, text="number of comments:").pack()
+        tk.Label(window, text=get_number_of_comment(item[0])).pack()
+        
         tk.Button(window, text="share",command=partial(insert_share_post_page,user_id,item[0])).pack()
         tk.Button(window, text="like",command=partial(insert_like_post,user_id,item[0])).pack()
         tk.Button(window, text="comment",command=partial(comment_page,user_id,item[0])).pack()
@@ -123,14 +162,20 @@ def network_like_post_page(user_id):
 
 def network_comment_post_page(user_id):
     #get data
-    posts=network_create_post_data(user_id)
+    posts=network_comment_post_data(user_id)
     #tk view
     window = tk.Tk()
-    window.title("POST OF PEOPLE IN YOUR NETWORK")
+    window.title("NETWORK COMMENT POST")
     for item in posts:
-        tk.Label(window, text=item[1]).pack()
+        tk.Label(window, text=get_username(item[1])[0][0]).pack()
         tk.Label(window, text=item[2]).pack()
         tk.Label(window, text=item[3]).pack()
+
+        tk.Label(window, text="number of like:").pack()
+        tk.Label(window, text=get_number_of_like(item[0])).pack()
+        tk.Label(window, text="number of comments:").pack()
+        tk.Label(window, text=get_number_of_comment(item[0])).pack()
+        
         tk.Button(window, text="share",command=partial(insert_share_post_page,user_id,item[0])).pack()
         tk.Button(window, text="like",command=partial(insert_like_post,user_id,item[0])).pack()
         tk.Button(window, text="comment",command=partial(comment_page,user_id,item[0])).pack()

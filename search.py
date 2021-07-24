@@ -46,7 +46,7 @@ def addNotif(user_id, param):
 
 def view_profile(caller_id,user_id, param):
     addNotif(user_id,param)
-
+    print(user_id)
     data_from_user_table = cur.execute(f'select * from user where user_id="{user_id}" ').fetchall()[0]
     user_id = data_from_user_table[0]
     # print(len(data_from_user_table))
