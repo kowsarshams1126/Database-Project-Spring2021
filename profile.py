@@ -1,9 +1,13 @@
 import sqlite3
 from datetime import datetime
+from functools import partial
+import tkinter as tk
 from tkinter import *
 import tkinter.font
 from network_query import connection_data
 import notif_query
+from post import comment_page
+from post_query import insert_like_post
 
 con = sqlite3.connect('linkedin_db.db')
 cur = con.cursor()
@@ -310,7 +314,7 @@ def f15(container, datas, data, button1, output):
 #         # et2.destroy()
 
 
-def send_edit_to_DB(editPage, username, user_id, v1, v2, v3, v4, v5, v6,v7,v8, v11, entries1, entries2, entries3,
+def send_edit_to_DB(editPage, username, user_id, v1, v2, v3, v4, v5, v7,v8, v11, entries2, entries3,
                     entries4, final):
     editPage.destroy()
     position=cur.execute(f'select company from user where user_id="{user_id}"').fetchall()[0][0]
@@ -329,8 +333,6 @@ def send_edit_to_DB(editPage, username, user_id, v1, v2, v3, v4, v5, v6,v7,v8, v
                                     location="{v8.get()}"
                                     WHERE username="{username}"
                                     ''')
-    cur.execute(f'delete from feature where user_id="{user_id}"')
-    con.commit()
 
     cur.execute(f'delete from skill where user_id="{user_id}"')
     con.commit()
@@ -341,10 +343,7 @@ def send_edit_to_DB(editPage, username, user_id, v1, v2, v3, v4, v5, v6,v7,v8, v
     cur.execute(f'delete from accomplishment where user_id="{user_id}"')
 
     con.commit()
-    for entry in entries1:
-        if entry.get() != "" and entry.get != None:
-            cur.execute(f'insert into feature(content,user_id) values ("{entry.get()}","{user_id}")')
-    con.commit()
+
 
     for entry in entries2:
         if entry.get() != "" and entry.get != None:
@@ -675,6 +674,7 @@ def add(b,user_id, container,data,i,type,x):
 def do_it(user_id):
     global hi,bi,mi,pi,ji
     editBG=Tk()
+    editBG.geometry("1000x1000")
     highschool=LabelFrame(editBG,text="High School")
     bachlor=LabelFrame(editBG,text="Bachlor")
     master=LabelFrame(editBG,text="Master")
@@ -730,12 +730,16 @@ def do_it(user_id):
         i += 1
 
 
+def removeFeatured(user_id,post_id):
+    cur.execute(f'delete from feature where user_id="{user_id}" and post_id="{post_id}"')
+    con.commit()
 
 def editInfo(mainPage, username):
     data_from_user_table = cur.execute(f'select * from user where username="{username}" ').fetchall()[0]
     user_id = data_from_user_table[0]
     mainPage.destroy()
     editPage = Tk()
+    editPage.geometry("1000x1000")
     Edit = Label(editPage, text="EDIT", bd=4)
     Edit.grid(row=0, column=1)
     v1 = StringVar(editPage, value=data_from_user_table[1] if data_from_user_table[1] != None and data_from_user_table[
@@ -779,21 +783,22 @@ def editInfo(mainPage, username):
     about.grid(row=6, column=1)
     aboutD.grid(row=6, column=2)
     featured = Label(editPage, text="Featured:", anchor='w')
-    featuredDs = cur.execute(f'select content from feature where (user_id= "{user_id}" )').fetchall()
+    featured.grid(row=7,column=1)
+    featuredDs = cur.execute(f'select * from post where post_id in (select post_id from feature where (user_id= "{user_id}" ))').fetchall()
+    print(featuredDs)
     featureTXT = ""
-    container1 = LabelFrame(editPage)
-    container1.grid(row=7, column=2)
-    entries1 = []
-    removeButtons1 = []
-    entries_Text_vars1 = []
-    addButton1 = Button(container1, text="add feature",
-                        command=lambda: f1(container1, entries1, entries_Text_vars1, addButton1, removeButtons1, ""))
-    addButton1.grid(row=len(entries1), column=1)
-    for i in range(len(featuredDs)):
-        f1(container1, entries1, entries_Text_vars1, addButton1, removeButtons1, featuredDs[i][0])
+    lf1=LabelFrame(editPage)
+    lf1.grid(row=7,column=2)
+    for item in featuredDs:
 
-    v6 = StringVar(editPage, value=featureTXT)
-    featured.grid(row=7, column=1)
+        tk.Label(lf1, text=item[1]).pack()
+        tk.Label(lf1, text=item[2]).pack()
+        tk.Label(lf1, text=item[3]).pack()
+        tk.Button(lf1, text="like",command=partial(insert_like_post,user_id,item[0])).pack()
+        tk.Button(lf1, text="comment",command=partial(comment_page,user_id,item[0])).pack()
+        tk.Button(lf1, text="remove featured",command=partial(removeFeatured,user_id,item[0])).pack()
+        tk.Label(lf1, text="--------------------------------------").pack()
+
     highSchool = cur.execute(
         f'select location,field,f,t from background where user_id= "{user_id}" and type="h"  ').fetchall()
     bachlor = cur.execute(
@@ -873,8 +878,8 @@ def editInfo(mainPage, username):
     #     f15(container5_5, j, data, AddButton5_5, output5)
     # AddButton5_5.grid(row=2, column=1)
     #
-    # background = Label(editPage, text="Background", anchor='w')
-    # background.grid(row=8, column=1)
+    background = Label(editPage, text="Background", anchor='w')
+    background.grid(row=8, column=1)
     skillDs = cur.execute(f'select content from skill where (user_id= "{user_id}" )').fetchall()
 
     container2 = LabelFrame(editPage)
@@ -937,8 +942,8 @@ def editInfo(mainPage, username):
     ccD.grid(row=13, column=2)
 
     submit = Button(editPage, text="Submit",
-                    command=lambda: send_edit_to_DB(editPage, username, user_id, v1, v2, v3, v4, v5, v6,v7,v8, v11,
-                                                    entries_Text_vars1, entries_Text_vars2, entries_Text_vars3,
+                    command=lambda: send_edit_to_DB(editPage, username, user_id, v1, v2, v3, v4, v5,v7,v8, v11,
+                                                     entries_Text_vars2, entries_Text_vars3,
                                                     entries_Text_vars4,final))
     submit.grid(row=14, column=1)
 
@@ -969,6 +974,7 @@ def makeNew(i, param, notif_page):
 
 def show_notifs(user_id):
     notif_page=Tk()
+    notif_page.geometry("500x500")
     notifs=cur.execute(f'select * from notification where user_idR="{user_id}" and read="{0}" order by date desc').fetchall()
     labels=[Label(notif_page,text="")]*len(notifs)
     svs=[StringVar(notif_page)]*len(notifs)
@@ -988,6 +994,10 @@ def addNotif(user_id, param):
             f'update notification set read="{0}",date="{datetime.datetime.now()}" where notification_id="{res[0][0]}"')
         con.commit()
 
+
+def refresh_page(user_id, mainPage):
+    mainPage.destroy()
+    profile_mainPage(user_id)
 
 
 def profile_mainPage(user_id):
@@ -1010,6 +1020,7 @@ def profile_mainPage(user_id):
     print(len(data_from_user_table))
     print(data_from_user_table)
     mainPage = Tk()
+    mainPage.geometry("1000x1000")
     font = tkinter.font.Font(mainPage, size=40)
     profile = Label(mainPage, text="PROFILE", font=font, bd=4)
     profile.grid(row=0, column=1)
@@ -1039,12 +1050,20 @@ def profile_mainPage(user_id):
     about.grid(row=5, column=1)
     aboutD.grid(row=5, column=2)
     featured = Label(mainPage, text="Featured:", anchor='w')
-    featuredDs = cur.execute(f'select content from feature where (user_id= "{user_id}" )').fetchall()
+    featuredDs = cur.execute(f'select * from post where post_id in (select post_id from feature where (user_id= "{user_id}" ))').fetchall()
+    print(featuredDs)
     featureTXT = ""
-    for i in range(len(featuredDs)):
-        featureTXT += featuredDs[i][0] + (', ' if i != len(featuredDs) - 1 else '.')
-    featuredD = Label(mainPage, text=featureTXT)
-    featuredD.grid(row=6, column=2)
+    lf1=LabelFrame(mainPage)
+    for item in featuredDs:
+
+        tk.Label(lf1, text=item[1]).pack()
+        tk.Label(lf1, text=item[2]).pack()
+        tk.Label(lf1, text=item[3]).pack()
+        tk.Button(lf1, text="like",command=partial(insert_like_post,user_id,item[0])).pack()
+        tk.Button(lf1, text="comment",command=partial(comment_page,user_id,item[0])).pack()
+        # tk.Button(lf1, text="add feature",command=partial(comment_page,user_id,item[0])).pack()
+        tk.Label(lf1, text="--------------------------------------").pack()
+    lf1.grid(row=6, column=2)
     featured.grid(row=6, column=1)
     highSchool = cur.execute(
         f'select location,field from background where user_id= "{user_id}" and type="h"  ').fetchall()
@@ -1122,7 +1141,7 @@ def profile_mainPage(user_id):
     ccL.grid(row=12,column=1)
     ccD.grid(row=12,column=2)
 
-    refresh = Button(mainPage, text="Refresh")
+    refresh = Button(mainPage, text="Refresh",command=lambda :refresh_page(user_id,mainPage))
     edit = Button(mainPage, text="Edit Info", command=lambda: editInfo(mainPage, username))
     # numOfNotifs = len(cur.execute(f'select * from notification where user_idR="{user_id}" and read="{0}"').fetchall())
     # notifs = Button(mainPage, text=("There isn't any new notif." if numOfNotifs == 0 else f'{numOfNotifs} new notif{"s" if numOfNotifs>1 else""}!'),command=lambda :show_notifs(user_id))

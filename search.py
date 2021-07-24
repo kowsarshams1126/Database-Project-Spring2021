@@ -1,8 +1,13 @@
 import sqlite3
 import datetime
+from functools import partial
 from tkinter import *
 import tkinter.font
 from network_query import find_mutual_connection,connection_data
+import tkinter as tk
+
+from post import comment_page
+from post_query import insert_like_post
 
 con = sqlite3.connect('linkedin_db.db')
 cur = con.cursor()
@@ -52,6 +57,7 @@ def view_profile(caller_id,user_id, param):
     # print(len(data_from_user_table))
     # print(data_from_user_table)
     mainPage = Tk()
+    mainPage.geometry("1000x1000")
     font = tkinter.font.Font(mainPage, size=40)
     profile = Label(mainPage, text="PROFILE", font=font, bd=4)
     profile.grid(row=0, column=1)
@@ -81,12 +87,21 @@ def view_profile(caller_id,user_id, param):
     about.grid(row=5, column=1)
     aboutD.grid(row=5, column=2)
     featured = Label(mainPage, text="Featured:", anchor='w')
-    featuredDs = cur.execute(f'select content from feature where (user_id= "{user_id}" )').fetchall()
+    featured = Label(mainPage, text="Featured:", anchor='w')
+    featuredDs = cur.execute(
+        f'select * from post where post_id in (select post_id from feature where (user_id= "{user_id}" ))').fetchall()
+    print(featuredDs)
     featureTXT = ""
-    for i in range(len(featuredDs)):
-        featureTXT += featuredDs[i][0] + (', ' if i != len(featuredDs) - 1 else '.')
-    featuredD = Label(mainPage, text=featureTXT)
-    featuredD.grid(row=6, column=2)
+    lf1 = LabelFrame(mainPage)
+    for item in featuredDs:
+        tk.Label(lf1, text=item[1]).pack()
+        tk.Label(lf1, text=item[2]).pack()
+        tk.Label(lf1, text=item[3]).pack()
+        tk.Button(lf1, text="like", command=partial(insert_like_post, user_id, item[0])).pack()
+        tk.Button(lf1, text="comment", command=partial(comment_page, user_id, item[0])).pack()
+        # tk.Button(lf1, text="add feature",command=partial(comment_page,user_id,item[0])).pack()
+        tk.Label(lf1, text="--------------------------------------").pack()
+    lf1.grid(row=6, column=2)
     featured.grid(row=6, column=1)
     highSchool = cur.execute(
         f'select location,field from background where user_id= "{user_id}" and type="h"  ').fetchall()
@@ -174,13 +189,15 @@ def do_it(caller_id,cont,user,user_id,i):
 
 
 def search(user_id,name,location,cc,viewName,x):
+    search_page = Tk()
+    search_page.geometry("300x300")
     if x==0:
 
         # print(f'user_id:{user_id}')
         # print(f'name={name}')
         # print(f'location={location}')
         # print(f'cc={cc}')
-        search_page=Tk()
+
         if (location=="" or location==None):
             if(cc=="" or cc== None):
                 searchRes = cur.execute(
@@ -246,7 +263,7 @@ def search(user_id,name,location,cc,viewName,x):
 
             i+=1
             cont=LabelFrame(search_page)
-            do_it(user_id,cont,user,user_id,i)
+            do_it(user_id,cont,user,user[0],i)
 
         filterB=Button(cont1,text="Filter",command=lambda :filter_it(search_page,user_id,name,sv1.get(),sv2.get(),"v"+str(x-1),x))
         filterB.grid(row=3,column=1)
@@ -261,7 +278,8 @@ def search(user_id,name,location,cc,viewName,x):
         # print(f'cc={cc}')
         # print(f'vn={viewName}')
         # print(f'x={x}')
-        search_page=Tk()
+
+
         if (location=="" or location==None):
             if(cc=="" or cc== None):
                 searchRes = cur.execute(

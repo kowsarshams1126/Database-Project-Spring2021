@@ -1,7 +1,10 @@
 import sqlite3
 import datetime
+from functools import partial
 from tkinter import *
 import tkinter.font
+import tkinter as tk
+
 
 con = sqlite3.connect('linkedin_db.db')
 cur = con.cursor()
@@ -18,6 +21,12 @@ def do_invitation(param, user_id):
         cur.execute(
             f'update notification set read="{0}",date="{datetime.date.today()}" where notification_id="{res[0][0]}"')
         con.commit()
+
+
+def insert_like_post(args):
+    pass
+def comment_page(args):
+    pass
 
 
 def profile_mainPage(caller_user_id, username):
@@ -57,12 +66,20 @@ def profile_mainPage(caller_user_id, username):
     about.grid(row=5, column=1)
     aboutD.grid(row=5, column=2)
     featured = Label(mainPage, text="Featured:", anchor='w')
-    featuredDs = cur.execute(f'select content from feature where (user_id= "{user_id}" )').fetchall()
+    featuredDs = cur.execute(f'select * from post where post_id in (select post_id from feature where (user_id= "{user_id}" ))').fetchall()
+    print(featuredDs)
     featureTXT = ""
-    for i in range(len(featuredDs)):
-        featureTXT += featuredDs[i][0] + (', ' if i != len(featuredDs) - 1 else '.')
-    featuredD = Label(mainPage, text=featureTXT)
-    featuredD.grid(row=6, column=2)
+    lf1=LabelFrame(mainPage)
+    for item in featuredDs:
+
+        tk.Label(lf1, text=item[1]).pack()
+        tk.Label(lf1, text=item[2]).pack()
+        tk.Label(lf1, text=item[3]).pack()
+        tk.Button(lf1, text="like",command=partial(insert_like_post,user_id,item[0])).pack()
+        tk.Button(lf1, text="comment",command=partial(comment_page,user_id,item[0])).pack()
+        # tk.Button(lf1, text="add feature",command=partial(comment_page,user_id,item[0])).pack()
+        tk.Label(lf1, text="--------------------------------------").pack()
+    lf1.grid(row=6, column=2)
     featured.grid(row=6, column=1)
     highSchool = cur.execute(
         f'select location,field from background where user_id= "{user_id}" and type="h"  ').fetchall()

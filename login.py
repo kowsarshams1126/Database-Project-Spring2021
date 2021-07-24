@@ -12,7 +12,7 @@ cur = con.cursor()
 
 def checkInDB2(username1, password):
     res = cur.execute(f'select user_id from user where username="{username1}" and password="{password}"').fetchall()
-    print(res)
+    # print(res)
     return False if len(res) == 0 else True
 
 
@@ -28,23 +28,22 @@ def Authentication(loginpage, username1, password):
 
 def checkInDB(username, email):
     res = cur.execute(f'select user_id from user where username="{username}" or email="{email}"').fetchall()
-    print(res)
-    print("LLLLLLLLLLLLLLLLLLLLLLLL")
+
     return False if len(res) == 0 else True
 
 
 def sendData2DB_NEWACCOUNT(newAccount, username, password, email,loginPage):
     global UID
     newAccount.destroy()
-    print(checkInDB(username, password))
+    # print(checkInDB(username, password))
     if (not checkInDB(username, email)):
-        print("WHY")
-        print(cur.execute(
-            f'insert into user(name,password,email,username) values ("{username}","{password}","{email}","{username}") '))
+        # print("WHY")
+        # print(cur.execute(
+        #     f'insert into user(name,password,email,username) values ("{username}","{password}","{email}","{username}") '))
         con.commit()
-        UID = username
+        UID = cur.execute(f'select user_id from user where username="{username}"').fetchall()
+        home(UID[0][0])
         loginPage.destroy()
-        home(UID)
         return True
     else:
         Create(True,loginPage)
@@ -54,6 +53,7 @@ def sendData2DB_NEWACCOUNT(newAccount, username, password, email,loginPage):
 def Create(flag,loginPage):
     # loginPage.destroy()
     newAccount = Tk()
+    newAccount.geometry("500x500")
     usernameLabel = Label(newAccount, text='username')
     passwordLabel = Label(newAccount, text='password')
     usernameInput = Entry(newAccount)
@@ -78,7 +78,8 @@ def Create(flag,loginPage):
 
 def login(flag):
     global username
-    loginPage = Tk("500x5000")
+    loginPage = Tk()
+    loginPage.geometry("250x250")
     usernameLabel = Label(loginPage, text='username')
     passwordLabel = Label(loginPage, text='password')
     username = StringVar()
@@ -99,6 +100,6 @@ def login(flag):
     signUpButton.grid(row=3, column=2)
     # username=username.get()
     # password=password.get()
-    print(username)
-    print(password)
+    # print(username)
+    # print(password)
     loginPage.mainloop()
