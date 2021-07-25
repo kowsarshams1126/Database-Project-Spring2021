@@ -6,7 +6,6 @@ from tkinter import *
 import tkinter.font
 from network_query import connection_data
 import notif_query
-from post import comment_page
 from post_query import insert_like_post
 
 con = sqlite3.connect('linkedin_db.db')

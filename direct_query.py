@@ -122,15 +122,14 @@ def delete_conversation(user_idT, user_idR):
     con = sqlite3.connect('linkedin_db.db')
     cur = con.cursor()
     
+    
     conversation_id=cur.execute("""SELECT conversation_id FROM conversation WHERE (user_idT=? AND user_idR=?) OR (user_idT=? AND user_idR=?)""",
                        (user_idT,user_idR,user_idR,user_idT,)).fetchall()
     
-    is_delete=cur.execute('''SELECT unread_id FROM unread WHERE conversation_id=? AND user_id=?''',(conversation_id[0][0],user_idT,)).fetchall()
+    cur.execute('''DELETE FROM delete_con WHERE conversation_id=? AND user_id=?''',(conversation_id[0][0],user_idT,))
+    
 
-    if (len(is_delete)==0):
-        cur.execute("INSERT INTO delete_con (conversation_id,user_id) VALUES(?,?)",(conversation_id[0][0],user_idT,))
-    else:
-        print("you already delete this conversation")
+    cur.execute("INSERT INTO delete_con (conversation_id,user_id,date) VALUES(?,?)",(conversation_id[0][0],user_idT,datetime.datetime.now(),))
 
     con.commit()
     con.close()
@@ -173,9 +172,9 @@ def get_chat_status(user_id1,user_id2):
     else:
         data[0].append(0)
             
-    is_delete =cur.execute('''SELECT delete_id FROM delete_con WHERE conversation_id=? AND user_id=?''',(conversation_id[0][0],user_id1,)).fetchall()
+    is_delete =cur.execute('''SELECT date FROM delete_con WHERE conversation_id=? AND user_id=?''',(conversation_id[0][0],user_id1,)).fetchall()
     if len(is_delete)!=0:
-        data[0].append(1)
+        data[0].append(is_delete[0][0])
     else:
         data[0].append(0)
             

@@ -280,6 +280,7 @@ CREATE TABLE delete_con
   delete_id integer NOT NULL,
   conversation_id INT NOT NULL,
   user_id INT NOT NULL,
+  date DATE NOT NULL,
   PRIMARY KEY (delete_id),
   FOREIGN KEY (conversation_id) REFERENCES conversation(conversation_id),
   FOREIGN KEY (user_id) REFERENCES user(user_id)

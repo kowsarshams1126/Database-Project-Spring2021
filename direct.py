@@ -86,26 +86,35 @@ def chat_page(user_idT,user_idR):
     #tk view
     window = tk.Tk()
 
+
+    if chat_status[0][0]==1:
+        tk.Button(window, text="read",command=partial(change_read_status,user_idT,user_idR,1)).pack()
+    if chat_status[0][0]==0:
+        tk.Button(window, text="unread",command=partial(change_read_status,user_idT,user_idR,0)).pack()
+    if chat_status[0][1]==1:
+        tk.Button(window, text="unarchive",command=partial(change_archive_status,user_idT,user_idR,0)).pack()
+    if chat_status[0][1]==0:
+        tk.Button(window, text="archive",command=partial(change_archive_status,user_idT,user_idR,1)).pack()
+
+    tk.Button(window, text="delete",command=partial(delete_conversation,user_idT,user_idR)).pack()
+    tk.Label(window, text="--------------------------------------").pack()
+
     if chat_status[0][2]==0:#this conversation is not delete
-        
-        if chat_status[0][0]==1:
-            tk.Button(window, text="read",command=partial(change_read_status,user_idT,user_idR,1)).pack()
-        if chat_status[0][0]==0:
-            tk.Button(window, text="unread",command=partial(change_read_status,user_idT,user_idR,0)).pack()
-        if chat_status[0][1]==1:
-            tk.Button(window, text="unarchive",command=partial(change_archive_status,user_idT,user_idR,0)).pack()
-        if chat_status[0][1]==0:
-            tk.Button(window, text="archive",command=partial(change_archive_status,user_idT,user_idR,1)).pack()
-
-        tk.Button(window, text="delete",command=partial(delete_conversation,user_idT,user_idR)).pack()
-        tk.Label(window, text="--------------------------------------").pack()
-
         for item in messages:
             tk.Label(window, text=item[2]).pack()
             tk.Label(window, text=item[0]).pack()
             tk.Label(window, text=item[1]).pack()
             tk.Label(window, text="--------------------------------------").pack()
 
+    else:
+        for item in messages:
+            if chat_status[0][2]<item[1]:
+                tk.Label(window, text=item[2]).pack()
+                tk.Label(window, text=item[0]).pack()
+                tk.Label(window, text=item[1]).pack()
+                tk.Label(window, text="--------------------------------------").pack()
+
+        
     text=tk.Entry(window)    
     text.pack()
     tk.Button(window, text="send",command=partial(send_message,user_idT,user_idR,text)).pack()

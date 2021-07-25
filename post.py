@@ -4,12 +4,7 @@ from functools import partial
 import share_post
 from post_query import *
 from create_post import create_post
-
-
-#################################################################################################
-
-def comment_page(user_id,post_id):
-    pass
+from comments import show_comments as comment_page
 
 #################################################################################################
 
