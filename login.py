@@ -36,12 +36,13 @@ def sendData2DB_NEWACCOUNT(newAccount, username, password, email,loginPage):
     global UID
     newAccount.destroy()
     # print(checkInDB(username, password))
-    if (not checkInDB(username, email)):
+    if ( not checkInDB(username, email)):
         # print("WHY")
-        # print(cur.execute(
-        #     f'insert into user(name,password,email,username) values ("{username}","{password}","{email}","{username}") '))
+        print(cur.execute(
+            f'insert into user(name,password,email,username) values ("{username}","{password}","{email}","{username}") '))
         con.commit()
         UID = cur.execute(f'select user_id from user where username="{username}"').fetchall()
+
         home(UID[0][0])
         loginPage.destroy()
         return True
