@@ -2,9 +2,10 @@ from os import name
 import tkinter as tk
 import sqlite3
 import datetime
+from notif_query import addNotif_likeOrReplyComment
 
 
-def show_comments(postId,userLoginId):
+def show_comments(userLoginId,postId):
     con = sqlite3.connect('linkedin_db.db')
     cur = con.cursor()
 
@@ -15,7 +16,8 @@ def show_comments(postId,userLoginId):
     tk.Label(window, text="comments of this post:").pack()
     tk.Label(window, text="*********************************************************************").pack()
 
-    res = cur.execute(f'select * from comment where post_id="{postId}"').fetchall() 
+    res = cur.execute(f'select * from comment where post_id="{postId}"').fetchall()
+    # print(re)
     printedComments=[]
     
     for i in range(0 , len(res)):
@@ -96,9 +98,11 @@ def like_comment(userLoginId, commentId):
     con = sqlite3.connect('linkedin_db.db')
     cur = con.cursor()
     res = cur.execute(f'insert into like_comment(user_id, date, comment_id) values ("{userLoginId}","{datetime.date.today()}","{commentId}")')
-
+    user_id2=cur.execute(f'select user_id from comment where comment_id="{commentId}"').fetchall()[0][0]
     con.commit()
     con.close()
+    addNotif_likeOrReplyComment(userLoginId,user_id2)
+
 
 def reply_comment(userLoginId, commentId, postId):
     window2 = tk.Tk()

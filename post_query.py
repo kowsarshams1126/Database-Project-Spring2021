@@ -12,8 +12,10 @@ from direct_query import people_in_network
 def insert_like_post(user_id,post_id):
     con = sqlite3.connect('linkedin_db.db')
     cur = con.cursor()
-    notif_query.addNotif_likePost(user_id,post_id)
-    cur.execute(f'insert into like_post(date,post_id,user_id) values ("{datetime.datetime.now()}","{post_id}","{user_id}")')
+    res=cur.execute(f'select * from like_post where user_id="{user_id}" and post_id="{post_id}"').fetchall()
+    if len(res)==0:
+        notif_query.addNotif_likePost(user_id,post_id)
+        cur.execute(f'insert into like_post(date,post_id,user_id) values ("{datetime.datetime.now()}","{post_id}","{user_id}")')
     con.commit()
 #########################################################################################
 def get_number_of_like(post_id):
