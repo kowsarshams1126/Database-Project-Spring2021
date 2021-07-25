@@ -1,5 +1,5 @@
 import sqlite3
-from datetime import datetime
+import datetime
 from functools import partial
 import tkinter as tk
 from tkinter import *
@@ -321,7 +321,8 @@ def send_edit_to_DB(editPage, username, user_id, v1, v2, v3, v4, v5, v7,v8, v11,
     if position!=v7.get():
         for user in connection_data(user_id):
             notif_query.addNotif_changePosition(user_id,user[0])
-
+    print(v7.get())
+    print(v8.get())
 
     cur.execute(f'''UPDATE user SET name="{v1.get()}",
                                     gender="{1 if str(v2.get()).__eq__("Female") else 0 if v2.get() == "Male" else ""}",
@@ -329,8 +330,8 @@ def send_edit_to_DB(editPage, username, user_id, v1, v2, v3, v4, v5, v7,v8, v11,
                                     about="{v5.get()}",
                                     email="{v3.get()}",
                                     birthday="{"" if v11.get() == "yyyy-mm-dd" else v11.get()}",
-                                    company="{v7.get()}",
-                                    location="{v8.get()}"
+                                    company="{v8.get()}",
+                                    location="{v7.get()}"
                                     WHERE username="{username}"
                                     ''')
 
@@ -929,8 +930,7 @@ def editInfo(mainPage, username):
     addButton4.grid(row=len(entries4), column=1)
     locationL = Label(editPage, text="Location: ")
     location = cur.execute(f'select location from user where username="{username}"').fetchall()[0][0]
-    v7=StringVar(editPage, value=data_from_user_table[-3] if data_from_user_table[-3] != None and data_from_user_table[
-        -3] != "" else "")
+    v7=StringVar(editPage, value=location if location != None and location!= "" else "")
     locationD = Entry(editPage, textvariable=v7)
     locationL.grid(row=12, column=1)
     locationD.grid(row=12, column=2)

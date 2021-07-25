@@ -68,7 +68,7 @@ def addNotif_changePosition(user_id, param):
     con = sqlite3.connect('linkedin_db.db')
     cur = con.cursor()
     cur.execute(
-        f'insert into notification(read,type,user_idT,user_idR,date) values ("{0}","{6}","{user_id}","{param}","{datetime.datetime.now()}")')
+        f'insert into notification(read,type,user_idT,user_idR,date) values ("{0}","{7}","{user_id}","{param}","{datetime.datetime.now()}")')
     con.commit()
     con.close()
 

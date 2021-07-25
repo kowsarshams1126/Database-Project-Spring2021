@@ -129,7 +129,7 @@ def delete_conversation(user_idT, user_idR):
     cur.execute('''DELETE FROM delete_con WHERE conversation_id=? AND user_id=?''',(conversation_id[0][0],user_idT,))
     
 
-    cur.execute("INSERT INTO delete_con (conversation_id,user_id,date) VALUES(?,?)",(conversation_id[0][0],user_idT,datetime.datetime.now(),))
+    cur.execute("INSERT INTO delete_con (conversation_id,user_id,date) VALUES(?,?,?)",(conversation_id[0][0],user_idT,datetime.datetime.now(),))
 
     con.commit()
     con.close()
