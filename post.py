@@ -9,6 +9,8 @@ from comments import show_comments as comment_page
 #################################################################################################
 
 def insert_share_post_page(user_id,post_id):
+    print(user_id)
+    print("((((((((((((((99")
     share_post.share_post(user_id,post_id)
 
 #################################################################################################

@@ -17,7 +17,7 @@ def share_it(user_id, post_id, sv):
     con.commit()
 
 
-def share_post(post_id,user_id):
+def share_post(user_id,post_id):
     page=Tk()
     post=cur.execute(f'select * from post where post_id="{post_id}"').fetchall()[0]
     sv=StringVar(page)

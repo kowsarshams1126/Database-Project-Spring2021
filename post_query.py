@@ -65,6 +65,7 @@ def get_my_post_data(user_id):
     return data  
 
 def get_my_shared_post_data(user_id):
+    print(user_id)
     con = sqlite3.connect('linkedin_db.db')
     cur = con.cursor()
     
