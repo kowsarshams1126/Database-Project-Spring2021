@@ -3,14 +3,18 @@ import datetime
 
 from itertools import chain
 
+import notif_query
 from direct_query import people_in_network
 
 
 #########################################################################################
 
 def insert_like_post(user_id,post_id):
-    pass
-
+    con = sqlite3.connect('linkedin_db.db')
+    cur = con.cursor()
+    notif_query.addNotif_likePost(user_id,post_id)
+    cur.execute(f'insert into like_post(date,post_id,user_id) values ("{datetime.datetime.now()}","{post_id}","{user_id}")')
+    con.commit()
 #########################################################################################
 def get_number_of_like(post_id):
     con = sqlite3.connect('linkedin_db.db')

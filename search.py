@@ -4,6 +4,7 @@ from functools import partial
 from tkinter import *
 import tkinter.font
 from network_query import find_mutual_connection,connection_data
+from network_query import insert_invitation as do_invitation
 import tkinter as tk
 
 from post import comment_page
@@ -13,18 +14,18 @@ con = sqlite3.connect('linkedin_db.db')
 cur = con.cursor()
 
 
-
-def do_invitation(param, user_id):
-    res = cur.execute(
-        f'select notification_id from notification where type=2 and user_idT="{user_id}" and user_idR="{param}"').fetchall()
-    if len(res) == 0:
-        cur.execute(
-            f'insert into notification(read,type,user_idT,user_idR,date) values ("{0}","{2}","{user_id}","{param}","{datetime.date.today()}")')
-        con.commit()
-    else:
-        cur.execute(
-            f'update notification set read="{0}",date="{datetime.date.today()}" where notification_id="{res[0][0]}"')
-        con.commit()
+#
+# def do_invitation(param, user_id):
+#     res = cur.execute(
+#         f'select notification_id from notification where type=2 and user_idT="{user_id}" and user_idR="{param}"').fetchall()
+#     if len(res) == 0:
+#         cur.execute(
+#             f'insert into notification(read,type,user_idT,user_idR,date) values ("{0}","{2}","{user_id}","{param}","{datetime.date.today()}")')
+#         con.commit()
+#     else:
+#         cur.execute(
+#             f'update notification set read="{0}",date="{datetime.date.today()}" where notification_id="{res[0][0]}"')
+#         con.commit()
 
 
 def filter_it(sp,user_id, name, param, param1,viewName,x):

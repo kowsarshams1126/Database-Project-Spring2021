@@ -1,5 +1,5 @@
 import sqlite3
-from datetime import datetime
+import datetime
 from functools import partial
 import tkinter as tk
 from tkinter import *
@@ -13,14 +13,14 @@ cur = con.cursor()
 
 
 def share_it(user_id, post_id, sv):
-    cur.execute(f'insert into share_post(user_id,post_id,comment) value ("{user_id}","{post_id}","{sv.get()}")')
+    cur.execute(f'insert into share_post(user_id,post_id,comment,date) values("{user_id}","{post_id}","{sv.get()}","{datetime.datetime.now()}")')
     con.commit()
 
 
 def share_post(post_id,user_id):
     page=Tk()
     post=cur.execute(f'select * from post where post_id="{post_id}"').fetchall()[0]
-    sv=StringVar()
+    sv=StringVar(page)
     comment=Entry(page,textvariable=sv)
     button=Button(page,text="Share Post!",command=lambda :share_it(user_id,post_id,sv))
     lf2=LabelFrame(page,text= "comment on:")
